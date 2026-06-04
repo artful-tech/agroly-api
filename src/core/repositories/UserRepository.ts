@@ -4,7 +4,7 @@ import { UserModel, UserModelCreate, UserModelUpdate } from "../models/UserModel
 
 
 export class UserRepository implements IUserRepository {
-    constructor(private prisma: PrismaClient) {}
+    constructor(private readonly prisma: PrismaClient) {}
 
     public findAll = async (): Promise<UserModel[]> => {
         return await this.prisma.user.findMany({
@@ -12,8 +12,8 @@ export class UserRepository implements IUserRepository {
         });
     }
 
-    public findByEmail = async (email: string): Promise<UserModel> => {
-        const user = await this.prisma.user.findUniqueOrThrow({
+    public findByEmail = async (email: string): Promise<UserModel | null> => {
+        const user = await this.prisma.user.findUnique({
             where: { 
                 email: email,
                 deletedAt: null

@@ -8,17 +8,13 @@ export class FarmUsecase implements IFarmUsecase {
     
     public getAll = async (): Promise<FarmDtoView[]> => {
         const farms = await this.farmRepository.findAll();
-
-        if (!farms) {
-            return [];
-        }
-
         return FarmMapper.toView(farms);
     }
 
     public getOne = async (id: string): Promise<FarmDtoView> => {
-        throw new Error("Method not implemented.");
-    }
+            const farm = await this.farmRepository.findOne(id);
+            return FarmMapper.toView(farm);
+        }
 
     public create = async (createDto: FarmDtoCreate): Promise<string> => {
         const model = FarmMapper.fromCreateDtoToInput(createDto);
@@ -29,10 +25,12 @@ export class FarmUsecase implements IFarmUsecase {
     }
 
     public update = async (updateDto: FarmDtoUpdate): Promise<FarmDtoView> => {
-        throw new Error("Method not implemented.");
-    }
+            const model = FarmMapper.fromUpdateDtoToInput(updateDto);
+            const { id, ...data } = model;
+            return await this.farmRepository.update(id as string, data);
+        }
 
-    public delete = async (): Promise<void> => {
-        throw new Error("Method not implemented.");
+    public delete = async (id: string): Promise<void> => {
+        await this.farmRepository.delete(id);
     }
 }

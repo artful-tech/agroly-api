@@ -1,13 +1,19 @@
 import bcrypt from 'bcrypt';
 
 export class HashService {
-    private static readonly SALT_ROUNDS = process.env.SALT_ROUNDS || 10;
+    private readonly SALT_ROUNDS = process.env.SALT_ROUNDS || 10;
 
-    static async hash(password: string): Promise<string> {
+    public async hash(password: string): Promise<string> {
         return await bcrypt.hash(password, this.SALT_ROUNDS);
     }
 
-    static async compare(password: string, hash: string): Promise<boolean> {
+    /**
+     * Compara a senha sem hash com a senha com hash
+     * 
+     * @template password - Senha sem hash
+     * @template hash - Senha com hash
+     */
+    public async compare(password: string, hash: string): Promise<boolean> {
         return await bcrypt.compare(password, hash);
     }
 }

@@ -1,0 +1,7 @@
+# .github/CODEOWNERS
+
+/src/app.ts        @luizmarinhojr
+/src/server.ts     @luizmarinhojr
+
+# Se quiser proteger toda a pasta de infraestrutura
+/prisma/**

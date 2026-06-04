@@ -23,7 +23,7 @@ export class ErrorMiddleware {
         // Se for um erro conhecido da nossa aplicação (AppError)
         if (error instanceof AppError) {
             return res.status(error.statusCode).json({
-                status: "error",
+                status: error.status,
                 message: error.message,
             });
         }

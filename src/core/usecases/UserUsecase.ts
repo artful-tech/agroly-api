@@ -1,5 +1,6 @@
 import { HashService } from "../../infra/services/HashService";
 import { UserDtoCreate, UserDtoView } from "../../shared/dtos/UserDto";
+import { AppError } from "../errors/AppError";
 import { UserMapper } from "../models/UserModel";
 import { IUserRepository } from "../repositories/interfaces";
 import { IUserUsecase } from "./interfaces";
@@ -19,6 +20,9 @@ export class UserUsecase implements IUserUsecase {
 
     public getByEmail = async (email: string): Promise<UserDtoView> => {
         const userModel = await this.userRepository.findByEmail(email);
+        if (!userModel) {
+            throw new AppError('Usuário não encontrado', 409);
+        }
         return UserMapper.toView(userModel);
     }
 
@@ -27,10 +31,7 @@ export class UserUsecase implements IUserUsecase {
     }
 
     public create = async (createDto: UserDtoCreate): Promise<string> => {
-        const hashedPassword = await HashService.hash(createDto.password);
-        const userModelCreate = UserMapper.fromCreateDtoToInput(createDto);
-        userModelCreate.password = hashedPassword;
-        return await this.userRepository.create(userModelCreate);
+        throw new Error("Method not implemented.");
     }
 
     public update = async (updateDto: { email: string; actualPassword: string; newPassword: string; newConfirmPassword: string; }): Promise<UserDtoView> => {

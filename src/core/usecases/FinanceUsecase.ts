@@ -7,17 +7,13 @@ import { IFinanceUsecase } from "./interfaces";
 export class FinanceUsecase implements IFinanceUsecase {
     constructor(private financeRepository: IFinanceRepository) {}
 
-    public get = async (id: string): Promise<FinanceDtoView> => {
-        const finance = await this.financeRepository.watchFinance(id);
-        return FinanceMapper.toView(finance);
-    }
-
     public getAll = async (): Promise<FinanceDtoView[]> => {
         throw new Error("Method not implemented.");
     }
 
     public getOne = async (id: string): Promise<FinanceDtoView> => {
-        throw new Error("Method not implemented.");
+        const finance = await this.financeRepository.watchFinance(id);
+        return FinanceMapper.toView(finance);
     }
 
     public create = async (createDto: any): Promise<string> => {

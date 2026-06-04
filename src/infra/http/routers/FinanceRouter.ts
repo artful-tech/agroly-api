@@ -1,15 +1,18 @@
 import { Router } from "express";
 import { FinanceController } from "../controllers/FinanceController";
+import { RouteDisplay } from "../../utils/RouteDisplay";
+
 
 export default class FinanceRouter {
-
     constructor(private financeController: FinanceController) {}
 
     getRoutes = (): Router => {
-        const farmRouter = Router();
+        const financeRouter = Router();
 
-        farmRouter.get('/:userId', this.financeController.index);
+        financeRouter.get('/:userId', this.financeController.index);
 
-        return farmRouter;
+        RouteDisplay.scan(financeRouter, "/api/finance");
+
+        return financeRouter;
     }
 }

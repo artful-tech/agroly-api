@@ -27,6 +27,19 @@ import PeopleRouter from "../http/routers/PeopleRouter";
 import { PeopleRepository } from "../../core/repositories/PeopleRepository";
 import { PeopleUsecase } from "../../core/usecases/PeopleUsecase";
 import { PeopleController } from "../http/controllers/PeopleController";
+import { SeasonRouter } from "../http/routers/SeasonRouter";
+import { SeasonRepository } from "../../core/repositories/SeasonRepository";
+import { SeasonUsecase } from "../../core/usecases/SeasonUsecase";
+import { SeasonController } from "../http/controllers/SeasonController";
+import { InventoryItemRepository } from "../../core/repositories/InventoryItemRepository";
+import { InventoryItemUsecase } from "../../core/usecases/InventoryItemUsecase";
+import { InventoryItemController } from "../http/controllers/InventoryItemController";
+import { InventoryItemRouter } from "../http/routers/InventoryItemRouter";
+import { AuthRouter } from "../http/routers/AuthRouter";
+import { AuthUsecase } from "../../core/usecases/AuthUsecase";
+import { HashService } from "../services/HashService";
+import { TokenService } from "../services/TokenService";
+import { AuthController } from "../http/controllers/AuthController";
 
 
 export class Factories {
@@ -79,5 +92,26 @@ export class Factories {
         const usecase = new PeopleUsecase(repository);
         const controller = new PeopleController(usecase);
         return new PeopleRouter(controller);
+    }
+
+    makeSeasonRouter(): SeasonRouter {
+        const repository = new SeasonRepository(this.prisma);
+        const usecase = new SeasonUsecase(repository);
+        const controller = new SeasonController(usecase);
+        return new SeasonRouter(controller);
+    }
+    
+    makeInventoryItemRouter(): InventoryItemRouter {
+        const repository = new InventoryItemRepository(this.prisma);
+        const usecase = new InventoryItemUsecase(repository);
+        const controller = new InventoryItemController(usecase);
+        return new InventoryItemRouter(controller);
+    }
+
+    makeAuthRouter(): AuthRouter {
+        const repository = new UserRepository(this.prisma);
+        const usecase = new AuthUsecase(repository, new HashService(), new TokenService());
+        const controller = new AuthController(usecase);
+        return new AuthRouter(controller);
     }
 }

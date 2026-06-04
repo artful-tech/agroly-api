@@ -7,23 +7,56 @@ export class PlotRepository implements IPlotRepository {
     constructor(private prisma: PrismaClient) { }
 
     public findAll = async (): Promise<PlotModel[]> => {
-        return await this.prisma.plot.findMany();
+        return await this.prisma.plot.findMany({
+            where: {
+                deletedAt: null
+            }
+        });
     }
 
     public findOne = async (id: string): Promise<PlotModel> => {
-        throw new Error("Method not implemented.");
+        return await this.prisma.plot.findUniqueOrThrow({
+            where: { 
+                id: id,
+                deletedAt: null
+            }
+        });
     }
 
-    public create = async (model: PlotModelCreate): Promise<string> => {
-        throw new Error("Method not implemented.");
+    public create = async (data: PlotModelCreate): Promise<string> => {
+        const plot = await this.prisma.plot.create({
+            data: data
+        });
+
+        return plot.id;
     }
 
-    public update = async (id: string, model: PlotModelUpdate): Promise<PlotModel> => {
-        throw new Error("Method not implemented.");
+    public update = async (id: string, data: PlotModelUpdate): Promise<PlotModel> => {
+        await this.prisma.plot.findFirstOrThrow({
+            where: { id }
+        });
+
+        return await this.prisma.plot.update({
+            where: { 
+                id: id,
+                deletedAt: null
+            },
+            data: data
+        });
     }
 
     public delete = async (id: string): Promise<void> => {
-        throw new Error("Method not implemented.");
+        await this.prisma.plot.findUniqueOrThrow({
+            where: { 
+                id: id,
+                deletedAt: null
+            }
+        });
+
+        await this.prisma.plot.update({
+            where: { id: id },
+            data: { deletedAt: new Date() }
+        })
     }
 
     

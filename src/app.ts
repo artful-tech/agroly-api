@@ -4,10 +4,11 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import { prisma } from './infra/database/prisma';
 import { Routers } from './infra/http/routers';
+import { LogConfig } from './infra/utils/LogConfig';
+import cookieParser from 'cookie-parser';
 
 const app = express();
  
-app.use(morgan('tiny'));
 app.use(cors());
 
 app.use(
@@ -23,6 +24,9 @@ app.use(
     },
   })
 );
+
+app.use(LogConfig.format());
+app.use(cookieParser());
 app.use(express.json());
 
 // ROTAS DA APLICAÇÃO

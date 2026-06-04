@@ -8,27 +8,26 @@ export class PlotUsecase implements IPlotUsecase {
         
     public getAll = async (): Promise<PlotDtoView[]> => {
         const plots = await this.plotRepository.findAll();
-
-        if (!plots) {
-            return [];
-        }
-
         return PlotMapper.toView(plots);
     }
 
     public getOne = async (id: string): Promise<PlotDtoView> => {
-        throw new Error("Method not implemented.");
+        const plot = await this.plotRepository.findOne(id);
+        return PlotMapper.toView(plot);
     }
 
     public create = async (createDto: PlotDtoCreate): Promise<string> => {
-        throw new Error("Method not implemented.");
+        const model = PlotMapper.fromCreateDtoToInput(createDto);
+        return await this.plotRepository.create(model);
     }
 
     public update = async (updateDto: PlotDtoUpdate): Promise<PlotDtoView> => {
-        throw new Error("Method not implemented.");
+        const model = PlotMapper.fromUpdateDtoToInput(updateDto);
+        const { id, ...data } = model;
+        return await this.plotRepository.update(id as string, data);
     }
 
-    public delete = async (): Promise<void> => {
-        throw new Error("Method not implemented.");
+    public delete = async (id: string): Promise<void> => {
+        await this.plotRepository.delete(id);
     }
 }

@@ -38,25 +38,26 @@ export class CropRepository implements ICropRepository {
         const crop = await this.prisma.crop.create({
             data: model
         });
+        
         return crop.id;
     }
 
-    public update = async (id: string, model: CropModelUpdate): Promise<CropModel> => {
+    public update = async (id: string, data: CropModelUpdate): Promise<CropModel> => {
+        await this.prisma.crop.findFirstOrThrow({
+            where: { id }
+        });
+
         return await this.prisma.crop.update({
             where: { 
                 id: id,
                 deletedAt: null
             },
-            data: model
+            data: data
         });
     }
 
     public delete = async (id: string): Promise<void> => {
-        await this.prisma.crop.delete({
-            where: { id: id }
-        });
-
-        const crop = await this.prisma.crop.findUniqueOrThrow({
+        await this.prisma.crop.findUniqueOrThrow({
             where: { 
                 id: id,
                 deletedAt: null
@@ -64,7 +65,7 @@ export class CropRepository implements ICropRepository {
         });
 
         await this.prisma.crop.update({
-            where: { id: crop.id },
+            where: { id: id },
             data: { deletedAt: new Date() }
         })
         

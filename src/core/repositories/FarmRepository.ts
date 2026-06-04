@@ -10,8 +10,13 @@ export class FarmRepository implements IFarmRepository {
     }
 
     public findOne = async (id: string): Promise<FarmModel> => {
-        throw new Error("Method not implemented.");
-    }
+            return await this.prisma.farm.findUniqueOrThrow({
+                where: { 
+                    id: id,
+                    deletedAt: null
+                }
+            });
+        }
 
     public create = async (model: FarmModelCreate): Promise<string> => {
         const farm = await this.prisma.farm.create({
@@ -21,11 +26,28 @@ export class FarmRepository implements IFarmRepository {
         return farm.id;
     }
 
-    public update = async (id: string, model: FarmModelUpdate): Promise<FarmModel> => {
-        throw new Error("Method not implemented.");
+    public update = async (id: string, data: FarmModelUpdate): Promise<FarmModel> => {
+        await this.prisma.farm.findFirstOrThrow({
+            where: { id }
+        });
+
+        return await this.prisma.farm.update({
+            where: { 
+                id: id,
+                deletedAt: null
+            },
+            data: data
+        });
     }
 
     public delete = async (id: string): Promise<void> => {
-        throw new Error("Method not implemented.");
+        await this.prisma.farm.findUniqueOrThrow({
+            where: { id }
+        });
+
+        await this.prisma.farm.update({
+            where: { id: id },
+            data: { deletedAt: new Date() }
+        })
     }
 }
